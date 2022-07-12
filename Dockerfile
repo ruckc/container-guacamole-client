@@ -3,7 +3,7 @@ FROM docker.io/library/tomcat:9-jre17
 ARG VERSION=1.4.0
 ENV GUACAMOLE_HOME=/etc/guacamole
 
-RUN mkdir -vp ${GUACAMOLE_HOME}/extensions && \
+RUN mkdir -vp ${GUACAMOLE_HOME}/extensions ${GUACAMOLE_HOME}/lib && \
     # setup guacamole.war
     curl -o ./webapps/guacamole.war -L https://apache.org/dyn/closer.lua/guacamole/${VERSION}/binary/guacamole-${VERSION}.war?action=download && \
     echo "92fb06e3ce8fe4f932ddfdffd75a352c06ab58d3bd0a946faa5beda73e8592f0 webapps/guacamole.war" | sha256sum --check && \
@@ -15,7 +15,9 @@ RUN mkdir -vp ${GUACAMOLE_HOME}/extensions && \
     tar --wildcards -zxvf /tmp/guacamole-auth-sso.tar.gz guacamole-auth-sso-${VERSION}/openid/*.jar -O > /etc/guacamole/extensions/guacamole-auth-oidc.jar && \
     tar --wildcards -zxvf /tmp/guacamole-auth-jdbc.tar.gz guacamole-auth-jdbc-${VERSION}/postgresql/*.jar -O > /etc/guacamole/extensions/guacamole-auth-jdbc.jar && \
     # cleanup
-    rm -f /tmp/guacamole-auth-sso.tar.gz /tmp/guacamole-auth-jdbc.tar.gz
+    rm -f /tmp/guacamole-auth-sso.tar.gz /tmp/guacamole-auth-jdbc.tar.gz && \
+    curl -o /etc/guacamole/lib/postgresql.jar -L https://search.maven.org/remotecontent?filepath=org/postgresql/postgresql/42.4.0/postgresql-42.4.0.jar && \
+    echo "fe25b9c0a2c59458504ec88862853df522ee87f8a02564835d537c29ae4cb125  /etc/guacamole/lib/postgresql.jar"
 
 COPY guacamole.properties /etc/guacamole/guacamole.properties
 COPY logback.xml /etc/guacamole/logback.xml
