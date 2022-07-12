@@ -1,0 +1,13 @@
+FROM docker.io/library/alpine:3.16
+
+ARG VERSION=1.4.0
+
+RUN apk add postgresql14-client curl
+
+RUN mkdir /sqls && \
+    curl -o /tmp/guacamole-auth-jdbc.tar.gz -L https://apache.org/dyn/closer.lua/guacamole/${VERSION}/binary/guacamole-auth-jdbc-${VERSION}.tar.gz?action=download && \
+    echo "47f4f121cad74ab64d5baf3d14e8f709677a26b3058005a977277a07716d4d9c  /tmp/guacamole-auth-jdbc.tar.gz" | sha256sum -c && \
+    tar -zxvf /tmp/guacamole-auth-jdbc.tar.gz guacamole-auth-jdbc-${VERSION}/postgresql/schema/001-create-schema.sql -O > /sqls/001-create-schema.sql && \
+    rm -f /tmp/guacamole-auth-jdbc.tar.gz
+
+ENTRYPOINT ["psql", "-f", "/sqls/001-create-schema.sql"]

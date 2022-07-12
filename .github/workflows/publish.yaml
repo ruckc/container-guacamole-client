@@ -38,7 +38,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
-        id: meta
+        id: meta-main
         uses: docker/metadata-action@v3
         with:
           tags: |
@@ -54,6 +54,30 @@ jobs:
         with:
           context: .
           push: true
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
+          tags: ${{ steps.meta-main.outputs.tags }}
+          labels: ${{ steps.meta-main.outputs.labels }}
           platforms: linux/arm64,linux/amd64
+
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta-jdbc-init
+        uses: docker/metadata-action@v3
+        with:
+          tags: |
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern=version
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha,event=branch,pattern={{branch}}-{{sha}}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}-jdbc-init
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v2
+        with:
+          file: Dockerfile.jdbc-init
+          context: .
+          push: true
+          tags: ${{ steps.meta-jdbc-init.outputs.tags }}
+          labels: ${{ steps.meta-jdbc-init.outputs.labels }}
+          platforms: linux/arm64,linux/amd64
+
+
