@@ -46,6 +46,7 @@ jobs:
             type=ref,event=pr
             type=semver,pattern=version
             type=semver,pattern={{major}}.{{minor}}
+            type=sha,event=branch,pattern={{branch}}-{{sha}}
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
 
       - name: Build and push Docker image

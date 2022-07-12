@@ -13,4 +13,4 @@ RUN mkdir -vp ${GUACAMOLE_HOME}/extensions && \
     sed -i 's/unpackWARs="true"/unpackWARs="false"/' /usr/local/tomcat/conf/server.xml # for readonly rootfs
 
 COPY guacamole.properties /etc/guacamole/guacamole.properties
-
+COPY logback.xml /etc/guacamole/logback.xml
