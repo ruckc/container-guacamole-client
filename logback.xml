@@ -7,7 +7,7 @@
     </appender>
 
     <!-- Log at DEBUG level -->
-    <root level="debug">
+    <root level="info">
         <appender-ref ref="GUAC-DEBUG"/>
     </root>
 
