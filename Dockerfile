@@ -14,3 +14,4 @@ RUN mkdir -vp ${GUACAMOLE_HOME}/extensions && \
 
 COPY guacamole.properties /etc/guacamole/guacamole.properties
 COPY logback.xml /etc/guacamole/logback.xml
+COPY user-mapping.xml /etc/guacamole/user-mapping.xml
